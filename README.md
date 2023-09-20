@@ -1,3 +1,3 @@
 # Lulu-KMK-Layout
-- Uses CircuitPython 8.2.6 for Blok [link](https://circuitpython.org/board/boardsource_blok/)
+- Uses BSPython 1.9.2 for Lulu [link](https://github.com/boardsource/bs-python/releases)
 - KMK Master [link](https://github.com/KMKfw/kmk_firmware)
