@@ -1,8 +1,6 @@
-# import board
 from kb import KMKKeyboard
 from kmk.keys import KC
 from kmk.modules.layers import Layers
-from kmk.modules.modtap import ModTap
 from kmk.modules.power import Power
 from kmk.modules.mouse_keys import MouseKeys
 from kmk.modules.capsword import CapsWord
@@ -11,31 +9,27 @@ from kmk.hid import HIDModes
 from kmk.handlers.sequences import send_string
 import supervisor
 from kmk.extensions.peg_oled_Display import Oled,OledDisplayMode,OledReactionType,OledData
-from kmk.modules.split import Split, SplitSide, SplitType
 from kmk.extensions.RGB import RGB
-
+from kmk.modules.split import Split, SplitSide, SplitType
 keyboard = KMKKeyboard()
-keyboard.modules.append(Power())
+layers_ext = Layers()
 keyboard.modules.append(MouseKeys())
 keyboard.modules.append(CapsWord())
 keyboard.extensions.append(MediaKeys())
-keyboard.modules.append(Layers())
-keyboard.modules.append(ModTap())
-
+keyboard.modules.append(layers_ext)
+keyboard.debug_enabled = True
 # codeblock
 """
 Enable HoldTap
 This codeblock enables HoldTap to be used on the device.
 """
 from kmk.modules.holdtap import HoldTap
+from kmk.modules.holdtap import HoldTapRepeat
 holdtap = HoldTap()
 # optional: set a custom tap timeout in ms
 holdtap.tap_time = 200
-prefer_hold=True
-tap_interrupted=False
 keyboard.modules.append(holdtap)
 # codeblock
-
 # codeblock
 """
 Enable TapDance
@@ -46,16 +40,36 @@ tapdance = TapDance()
 tapdance.tap_time = 200
 keyboard.modules.append(tapdance)
 # codeblock
-
 # oled
-oled_ext = Oled( OledData(image={0:OledReactionType.LAYER,1:["QWERTY.bmp","STRDY.bmp","GAME.bmp","SHORTCUT.bmp","NAVIGATION.bmp","MOUSE.bmp","MEDIA.bmp","NUMBERS.bmp","SYMBOLS.bmp","FUNCTIONS.bmp","GAME_2.bmp"]}),toDisplay=OledDisplayMode.IMG,flip=False)
-# oled
+oled_ext = Oled(
+    OledData(
+        corner_one={0:OledReactionType.STATIC,1:["layer"]},
+        corner_two={0:OledReactionType.LAYER,1:["0","1","2","3","4","5","6","7","8","9","10"]},
+        corner_three={0:OledReactionType.LAYER,1:["base","base","game","shortcut","right","right","right","left","left","left","game"]},
+        corner_four={0:OledReactionType.LAYER,1:["qwerty","sturdy","qwerty","keys","navigation","mouse","media","numbers","symbols","functions","mirror"]}
+        ),
+        toDisplay=OledDisplayMode.TXT,flip=False)# oled
 keyboard.extensions.append(oled_ext)
+# rgb
+rgb = RGB(pixel_pin=keyboard.rgb_pixel_pin, num_pixels=35, hue_default=0, sat_default=0, val_default=0)
+keyboard.extensions.append(rgb)
 
+class RgbLayers(Layers):
+    last_top_layer = 0
+    hues = (135, 135, 135, 224, 64, 0, 165, 96, 100, 192, 32)
+    underglow = [0, 1, 2, 3, 4, 5]
+    def after_hid_send(self, keyboard):
+        if keyboard.active_layers[0] != self.last_top_layer:
+            self.last_top_layer = keyboard.active_layers[0]
+            rgb.disable_auto_write=True
+            for i in self.underglow:
+                rgb.set_hsv(self.hues[self.last_top_layer], 255, 255, i)
+            rgb.show()
 
-
+keyboard.modules.append(RgbLayers())
+#rgb
 # TODO Comment one of these on each side
-split_side = SplitSide.LEFT
+#split_side = SplitSide.LEFT
 #split_side = SplitSide.RIGHT
 split = Split(data_pin=keyboard.rx, data_pin2=keyboard.tx, uart_flip=False)
 keyboard.modules.append(split)
@@ -63,14 +77,14 @@ keyboard.modules.append(split)
 # 2
 # encodercount
 # keymap
-keyboard.keymap = keyboard.keymap = [
-#0 QWERTY
+keyboard.keymap = [
+    #0 QWERTY
     [
         KC.NO, KC.NO, KC.NO, KC.NO, KC.NO, KC.NO, KC.NO, KC.NO, KC.NO, KC.NO, KC.NO, KC.NO,
         KC.NO, KC.Q, KC.W, KC.E, KC.R, KC.T, KC.Y, KC.U, KC.I, KC.O, KC.P, KC.NO,
-        KC.NO, KC.MT(KC.A, KC.LGUI, prefer_hold=False, tap_interrupted=True), KC.MT(KC.S, KC.LALT, prefer_hold=False, tap_interrupted=True), KC.MT(KC.D, KC.LCTL, prefer_hold=False, tap_interrupted=True), KC.MT(KC.F, KC.LSFT, prefer_hold=False, tap_interrupted=True), KC.G, KC.H, KC.MT(KC.J, KC.LSFT, prefer_hold=False, tap_interrupted=True), KC.MT(KC.K, KC.LCTL, prefer_hold=False, tap_interrupted=True), KC.MT(KC.L, KC.LALT, prefer_hold=False, tap_interrupted=True), KC.MT(KC.SCLN, KC.LGUI, prefer_hold=False, tap_interrupted=True), KC.NO,
-        KC.NO, KC.LT(3, KC.Z), KC.MT(KC.X, KC.RALT, prefer_hold=False, tap_interrupted=True), KC.C, KC.V, KC.B, KC.MUTE, KC.MPLY, KC.N, KC.M, KC.COMM, KC.MT(KC.DOT, KC.RALT, prefer_hold=False, tap_interrupted=True), KC.LT(3, KC.SLSH), KC.NO,
-        KC.TG(2), KC.LT(9, KC.ESC), KC.LT(7, KC.SPC), KC.LT(8, KC.TAB), KC.LT(5, KC.ENT), KC.LT(4, KC.BSPC), KC.LT(6, KC.DEL), KC.TO(1),
+        KC.NO, KC.HT(KC.A, KC.LGUI, prefer_hold=False, tap_interrupted=True, repeat=HoldTapRepeat.TAP), KC.HT(KC.S, KC.LALT, prefer_hold=False, tap_interrupted=True, repeat=HoldTapRepeat.TAP), KC.HT(KC.D, KC.LCTL, prefer_hold=False, tap_interrupted=True, repeat=HoldTapRepeat.TAP), KC.HT(KC.F, KC.LSFT, prefer_hold=False, tap_interrupted=True, repeat=HoldTapRepeat.TAP), KC.G, KC.H, KC.HT(KC.J, KC.LSFT, prefer_hold=False, tap_interrupted=True, repeat=HoldTapRepeat.TAP), KC.HT(KC.K, KC.LCTL, prefer_hold=False, tap_interrupted=True, repeat=HoldTapRepeat.TAP), KC.HT(KC.L, KC.LALT, prefer_hold=False, tap_interrupted=True, repeat=HoldTapRepeat.TAP), KC.HT(KC.SCLN, KC.LGUI, prefer_hold=False, tap_interrupted=True, repeat=HoldTapRepeat.TAP), KC.NO,
+        KC.NO, KC.LT(3, KC.Z, prefer_hold=False, tap_interrupted=True, repeat=HoldTapRepeat.TAP), KC.HT(KC.X, KC.RALT, prefer_hold=False, tap_interrupted=True, repeat=HoldTapRepeat.TAP), KC.C, KC.V, KC.B, KC.MUTE, KC.MPLY, KC.N, KC.M, KC.COMM, KC.HT(KC.DOT, KC.RALT, prefer_hold=False, tap_interrupted=True, repeat=HoldTapRepeat.TAP), KC.LT(3, KC.SLSH, prefer_hold=False, tap_interrupted=True, repeat=HoldTapRepeat.TAP), KC.NO,
+        KC.TG(2), KC.LT(9, KC.ESC, prefer_hold=False, tap_interrupted=True, repeat=HoldTapRepeat.TAP), KC.LT(7, KC.SPC, prefer_hold=False, tap_interrupted=True, repeat=HoldTapRepeat.TAP), KC.LT(8, KC.TAB, prefer_hold=False, tap_interrupted=True, repeat=HoldTapRepeat.TAP), KC.LT(5, KC.ENT, prefer_hold=False, tap_interrupted=True, repeat=HoldTapRepeat.TAP), KC.LT(4, KC.BSPC, prefer_hold=False, tap_interrupted=True, repeat=HoldTapRepeat.TAP), KC.LT(6, KC.DEL, prefer_hold=False, tap_interrupted=True, repeat=HoldTapRepeat.TAP), KC.TO(1),
         KC.VOLD,
         KC.VOLU,
         KC.MPRV,
@@ -80,9 +94,9 @@ keyboard.keymap = keyboard.keymap = [
     [
         KC.NO, KC.NO, KC.NO, KC.NO, KC.NO, KC.NO, KC.NO, KC.NO, KC.NO, KC.NO, KC.NO, KC.NO,
         KC.NO, KC.V, KC.M, KC.L, KC.C, KC.P, KC.X, KC.F, KC.O, KC.U, KC.J, KC.NO,
-        KC.NO, KC.MT(KC.S, KC.LGUI, prefer_hold=False, tap_interrupted=True), KC.MT(KC.T, KC.LALT, prefer_hold=False, tap_interrupted=True), KC.MT(KC.R, KC.LCTL, prefer_hold=False, tap_interrupted=True), KC.MT(KC.D, KC.LSFT, prefer_hold=False, tap_interrupted=True), KC.Y, KC.DOT, KC.MT(KC.N, KC.LSFT, prefer_hold=False, tap_interrupted=True), KC.MT(KC.A, KC.LCTL, prefer_hold=False, tap_interrupted=True), KC.MT(KC.E, KC.LALT, prefer_hold=False, tap_interrupted=True), KC.MT(KC.I, KC.LGUI, prefer_hold=False, tap_interrupted=True), KC.NO,
-        KC.NO, KC.LT(3, KC.Z), KC.MT(KC.K, KC.RALT, prefer_hold=False, tap_interrupted=True), KC.Q, KC.G, KC.W, KC.TRNS, KC.TRNS, KC.B, KC.H, KC.QUOT, KC.MT(KC.SCLN, KC.RALT, prefer_hold=False, tap_interrupted=True), KC.LT(3, KC.COMM), KC.NO,
-        KC.TG(2), KC.LT(9, KC.ESC), KC.LT(7, KC.SPC), KC.LT(8, KC.TAB), KC.LT(5, KC.ENT), KC.LT(4, KC.BSPC), KC.LT(6, KC.DEL), KC.TO(0),
+        KC.NO, KC.HT(KC.S, KC.LGUI, prefer_hold=False, tap_interrupted=True, repeat=HoldTapRepeat.TAP), KC.HT(KC.T, KC.LALT, prefer_hold=False, tap_interrupted=True, repeat=HoldTapRepeat.TAP), KC.HT(KC.R, KC.LCTL, prefer_hold=False, tap_interrupted=True, repeat=HoldTapRepeat.TAP), KC.HT(KC.D, KC.LSFT, prefer_hold=False, tap_interrupted=True, repeat=HoldTapRepeat.TAP), KC.Y, KC.DOT, KC.HT(KC.N, KC.LSFT, prefer_hold=False, tap_interrupted=True, repeat=HoldTapRepeat.TAP), KC.HT(KC.A, KC.LCTL, prefer_hold=False, tap_interrupted=True, repeat=HoldTapRepeat.TAP), KC.HT(KC.E, KC.LALT, prefer_hold=False, tap_interrupted=True, repeat=HoldTapRepeat.TAP), KC.HT(KC.I, KC.LGUI, prefer_hold=False, tap_interrupted=True, repeat=HoldTapRepeat.TAP), KC.NO,
+        KC.NO, KC.LT(3, KC.Z, prefer_hold=False, tap_interrupted=True, repeat=HoldTapRepeat.TAP), KC.HT(KC.K, KC.RALT, prefer_hold=False, tap_interrupted=True, repeat=HoldTapRepeat.TAP), KC.Q, KC.G, KC.W, KC.TRNS, KC.TRNS, KC.B, KC.H, KC.QUOT, KC.HT(KC.SCLN, KC.RALT, prefer_hold=False, tap_interrupted=True, repeat=HoldTapRepeat.TAP), KC.LT(3, KC.COMM, prefer_hold=False, tap_interrupted=True, repeat=HoldTapRepeat.TAP), KC.NO,
+        KC.TG(2), KC.LT(9, KC.ESC, prefer_hold=False, tap_interrupted=True, repeat=HoldTapRepeat.TAP), KC.LT(7, KC.SPC, prefer_hold=False, tap_interrupted=True, repeat=HoldTapRepeat.TAP), KC.LT(8, KC.TAB, prefer_hold=False, tap_interrupted=True, repeat=HoldTapRepeat.TAP), KC.LT(5, KC.ENT, prefer_hold=False, tap_interrupted=True, repeat=HoldTapRepeat.TAP), KC.LT(4, KC.BSPC, prefer_hold=False, tap_interrupted=True, repeat=HoldTapRepeat.TAP), KC.LT(6, KC.DEL, prefer_hold=False, tap_interrupted=True, repeat=HoldTapRepeat.TAP), KC.TO(0),
         KC.TRNS,
         KC.TRNS,
         KC.TRNS,
@@ -197,25 +211,6 @@ keyboard.keymap = keyboard.keymap = [
         KC.TRNS
     ]
 ]
-
-# rgb
-rgb = RGB(pixel_pin=keyboard.rgb_pixel_pin, num_pixels=35, hue_default=0, sat_default=0, val_default=0)
-keyboard.extensions.append(rgb)
-
-class RgbLayers(Layers):
-    last_top_layer = 0
-    hues = (135, 135, 135, 224, 64, 0, 165, 96, 100, 192, 32)
-    underglow = [0, 1, 2, 3, 4, 5]
-    def after_hid_send(self, keyboard):
-        if keyboard.active_layers[0] != self.last_top_layer:
-            self.last_top_layer = keyboard.active_layers[0]
-            rgb.disable_auto_write=True
-            for i in self.underglow:
-                rgb.set_hsv(self.hues[self.last_top_layer], 255, 255, i)
-            rgb.show()
-
-keyboard.modules.append(RgbLayers())
-
 # keymap
 if __name__ == '__main__': 
     keyboard.go(hid_type=HIDModes.USB)
