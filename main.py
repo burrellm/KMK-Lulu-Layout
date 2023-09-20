@@ -1,4 +1,5 @@
 from kb import KMKKeyboard
+from storage import getmount
 from kmk.keys import KC
 from kmk.modules.layers import Layers
 from kmk.modules.power import Power
@@ -18,6 +19,14 @@ keyboard.modules.append(CapsWord())
 keyboard.extensions.append(MediaKeys())
 keyboard.modules.append(layers_ext)
 keyboard.debug_enabled = True
+
+# TODO Comment one of these on each side
+#split_side = SplitSide.LEFT
+#split_side = SplitSide.RIGHT
+split = Split(data_pin=keyboard.rx, data_pin2=keyboard.tx, uart_flip=False)
+keyboard.modules.append(split)
+
+side = SplitSide.RIGHT if str(getmount('/').label)[-1] == 'R' else SplitSide.LEFT
 # codeblock
 """
 Enable HoldTap
@@ -58,21 +67,33 @@ class RgbLayers(Layers):
     last_top_layer = 0
     hues = (135, 135, 135, 224, 64, 0, 165, 96, 100, 192, 32)
     underglow = [0, 1, 2, 3, 4, 5]
+    wasdglow = [14, 20, 21, 22]
+    numpadglow = [14,15,16,21,20,19,26,27,28]
     def after_hid_send(self, keyboard):
         if keyboard.active_layers[0] != self.last_top_layer:
             self.last_top_layer = keyboard.active_layers[0]
             rgb.disable_auto_write=True
             for i in self.underglow:
                 rgb.set_hsv(self.hues[self.last_top_layer], 255, 255, i)
+            if self.last_top_layer in [2, 4, 5, 10] and side == SplitSide.LEFT:
+                for i in self.wasdglow:
+                    rgb.set_hsv(self.hues[self.last_top_layer], 255, 255, i)
+            else:
+                if side == SplitSide.LEFT:
+                    for i in self.wasdglow:
+                        rgb.set_hsv(0, 0, 0, i)
+            if self.last_top_layer in [7, 8, 9] and side == SplitSide.RIGHT:
+                for i in self.numpadglow:
+                    rgb.set_hsv(self.hues[self.last_top_layer], 255, 255, i)
+            else:
+                if side == SplitSide.RIGHT:
+                    for i in self.numpadglow:
+                        rgb.set_hsv(0, 0, 0, i)
             rgb.show()
 
 keyboard.modules.append(RgbLayers())
 #rgb
-# TODO Comment one of these on each side
-#split_side = SplitSide.LEFT
-#split_side = SplitSide.RIGHT
-split = Split(data_pin=keyboard.rx, data_pin2=keyboard.tx, uart_flip=False)
-keyboard.modules.append(split)
+
 # encodercount
 # 2
 # encodercount
