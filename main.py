@@ -115,10 +115,10 @@ keyboard.keymap = [
         KC.NO, KC.HT(KC.S, KC.LGUI, prefer_hold=False, tap_interrupted=True, repeat=HoldTapRepeat.TAP), KC.HT(KC.T, KC.LALT, prefer_hold=False, tap_interrupted=True, repeat=HoldTapRepeat.TAP), KC.HT(KC.R, KC.LCTL, prefer_hold=False, tap_interrupted=True, repeat=HoldTapRepeat.TAP), KC.HT(KC.D, KC.LSFT, prefer_hold=False, tap_interrupted=True, repeat=HoldTapRepeat.TAP), KC.Y, KC.DOT, KC.HT(KC.N, KC.LSFT, prefer_hold=False, tap_interrupted=True, repeat=HoldTapRepeat.TAP), KC.HT(KC.A, KC.LCTL, prefer_hold=False, tap_interrupted=True, repeat=HoldTapRepeat.TAP), KC.HT(KC.E, KC.LALT, prefer_hold=False, tap_interrupted=True, repeat=HoldTapRepeat.TAP), KC.HT(KC.I, KC.LGUI, prefer_hold=False, tap_interrupted=True, repeat=HoldTapRepeat.TAP), KC.NO,
         KC.NO, KC.Z, KC.K, KC.Q, KC.G, KC.W, KC.TRNS, KC.TRNS, KC.B, KC.H, KC.QUOT, KC.SCLN, KC.COMM, KC.NO,
         KC.TG(2), KC.LT(5, KC.ESC, prefer_hold=False, tap_interrupted=True, repeat=HoldTapRepeat.TAP), KC.LT(3, KC.SPC, prefer_hold=False, tap_interrupted=True, repeat=HoldTapRepeat.TAP), KC.LT(4, KC.TAB, prefer_hold=False, tap_interrupted=True, repeat=HoldTapRepeat.TAP), KC.LT(4, KC.ENT, prefer_hold=False, tap_interrupted=True, repeat=HoldTapRepeat.TAP), KC.LT(3, KC.BSPC, prefer_hold=False, tap_interrupted=True, repeat=HoldTapRepeat.TAP), KC.LT(5, KC.DEL, prefer_hold=False, tap_interrupted=True, repeat=HoldTapRepeat.TAP), KC.TO(0),
-        KC.TRNS,
-        KC.TRNS,
-        KC.TRNS,
-        KC.TRNS
+        KC.VOLD,
+        KC.VOLU,
+        KC.MPRV,
+        KC.MNXT
     ],
     #2 GAME
     [
@@ -127,10 +127,10 @@ keyboard.keymap = [
         KC.ESC, KC.A, KC.S, KC.D, KC.F, KC.G, KC.H, KC.J, KC.K, KC.L, KC.SCLN, KC.ENT,
         KC.LSFT, KC.Z, KC.X, KC.C, KC.V, KC.B, KC.TRNS, KC.TRNS, KC.N, KC.M, KC.COMM, KC.DOT, KC.SLSH, KC.RSFT,
         KC.TG(2), KC.LCTL, KC.SPC, KC.MO(6), KC.ENT, KC.BSPC, KC.DEL, KC.TG(2),
-        KC.TRNS,
-        KC.TRNS,
-        KC.TRNS,
-        KC.TRNS
+        KC.VOLD,
+        KC.VOLU,
+        KC.MPRV,
+        KC.MNXT
     ],
     #3 Nav Numbers
     [
@@ -139,10 +139,10 @@ keyboard.keymap = [
         KC.NO, KC.LEFT, KC.DOWN, KC.RGHT, KC.PGDN, KC.CAPS, KC.EQL, KC.N4, KC.N5, KC.N6, KC.GRV, KC.NO,
         KC.NO, KC.LCTL(KC.Z), KC.LCTL(KC.X), KC.LCTL(KC.C), KC.LCTL(KC.V), KC.LCTL(KC.Y), KC.TRNS, KC.TRNS, KC.BSLS, KC.N1, KC.N2, KC.N3, KC.SLSH, KC.NO,
         KC.NO, KC.ESC, KC.SPC, KC.TAB, KC.MINS, KC.N0, KC.DOT, KC.NO,
-        KC.TRNS,
-        KC.TRNS,
-        KC.TRNS,
-        KC.TRNS
+        KC.VOLD,
+        KC.VOLU,
+        KC.MPRV,
+        KC.MNXT
     ],
     #4 Mouse Symbols
     [
@@ -151,10 +151,10 @@ keyboard.keymap = [
         KC.NO, KC.MS_LT, KC.MS_DN, KC.MS_RT, KC.MW_DN, KC.MB_BTN5, KC.PLUS, KC.DLR, KC.PERC, KC.CIRC, KC.TILD, KC.NO,
         KC.NO, KC.LCTL(KC.A), KC.LCTL(KC.S), KC.LCTL(KC.N), KC.LCTL(KC.F), KC.LCTL(KC.W), KC.TRNS, KC.TRNS, KC.PIPE, KC.EXLM, KC.AT, KC.HASH, KC.QUES, KC.NO,
         KC.NO, KC.MB_MMB, KC.MB_LMB, KC.MB_RMB, KC.UNDS, KC.LPRN, KC.RPRN, KC.NO,
-        KC.TRNS,
-        KC.TRNS,
-        KC.TRNS,
-        KC.TRNS
+        KC.VOLD,
+        KC.VOLU,
+        KC.MPRV,
+        KC.MNXT
     ],
     #5 Media Functions
     [
@@ -163,10 +163,10 @@ keyboard.keymap = [
         KC.NO, KC.MPRV, KC.VOLD, KC.MNXT, KC.NO, KC.NO, KC.SLCK, KC.F4, KC.F5, KC.F6, KC.F11, KC.NO,
         KC.NO, KC.RGB_TOG, KC.RGB_MODE_PLAIN, KC.RGB_MODE_BREATHE, KC.RGB_MODE_RAINBOW, KC.RGB_MODE_KNIGHT, KC.TRNS, KC.TRNS, KC.PAUS, KC.F1, KC.F2, KC.F3, KC.F10, KC.NO,
         KC.NO, KC.MUTE, KC.MPLY, KC.MSTP, KC.ENT, KC.BSPC, KC.APP, KC.NO,
-        KC.TRNS,
-        KC.TRNS,
-        KC.TRNS,
-        KC.TRNS
+        KC.VOLD,
+        KC.VOLU,
+        KC.MPRV,
+        KC.MNXT
     ],
     #6 GAME_2
     [
@@ -175,10 +175,10 @@ keyboard.keymap = [
         KC.ENT, KC.SCLN,  KC.L, KC.K, KC.J, KC.H, KC.G, KC.F, KC.D, KC.S, KC.A, KC.ESC,
         KC.RSFT, KC.SLSH, KC.DOT, KC.COMM, KC.M, KC.N, KC.TRNS, KC.TRNS, KC.B, KC.V, KC.C, KC.X, KC.Z, KC.LSFT,
         KC.TG(2), KC.LCTL, KC.SPC, KC.MO(6), KC.ENT, KC.BSPC, KC.DEL, KC.TG(2),
-        KC.TRNS,
-        KC.TRNS,
-        KC.TRNS,
-        KC.TRNS
+        KC.VOLD,
+        KC.VOLU,
+        KC.MPRV,
+        KC.MNXT z
     ]
 ]
 # keymap
