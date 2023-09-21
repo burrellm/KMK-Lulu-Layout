@@ -178,7 +178,7 @@ keyboard.keymap = [
         KC.VOLD,
         KC.VOLU,
         KC.MPRV,
-        KC.MNXT z
+        KC.MNXT
     ]
 ]
 # keymap
