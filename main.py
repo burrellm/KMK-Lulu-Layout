@@ -4,6 +4,7 @@ from kmk.keys import KC
 from kmk.modules.layers import Layers
 from kmk.modules.mouse_keys import MouseKeys
 from kmk.extensions.media_keys import MediaKeys
+from kmk.extensions.lock_status import LockStatus
 from kmk.hid import HIDModes
 from kmk.handlers.sequences import send_string
 import supervisor
@@ -12,9 +13,11 @@ from kmk.extensions.RGB import RGB
 from kmk.modules.split import Split, SplitSide, SplitType
 keyboard = KMKKeyboard()
 layers_ext = Layers()
+locks = LockStatus()
+keyboard.modules.append(layers_ext)
+keyboard.extensions.append(locks)
 keyboard.modules.append(MouseKeys())
 keyboard.extensions.append(MediaKeys())
-keyboard.modules.append(layers_ext)
 #keyboard.debug_enabled = True
 
 # TODO Comment one of these on each side
@@ -66,6 +69,7 @@ class RgbLayers(Layers):
     underglow = [0, 1, 2, 3, 4, 5]
     wasdglow = [14, 20, 21, 22]
     numpadglow = [14,15,16,21,20,19,26,27,28]
+    thumbglow = [34, 33, 32, 31, 66, 67, 68, 69]
     def after_hid_send(self, keyboard):
         if keyboard.active_layers[0] != self.last_top_layer:
             self.last_top_layer = keyboard.active_layers[0]
@@ -86,6 +90,12 @@ class RgbLayers(Layers):
                 if side == SplitSide.RIGHT:
                     for i in self.numpadglow:
                         rgb.set_hsv(0, 0, 0, i)
+            if locks.get_caps_lock():
+                for i in self.thumbglow:
+                    rgb.set_hsv(self.hues[self.last_top_layer + 1], 255, 255, i)
+            else:
+                for i in self.thumbglow:
+                    rgb.set_hsv(0, 0, 0, i)
             rgb.show()
 
 keyboard.modules.append(RgbLayers())
